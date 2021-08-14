@@ -16,7 +16,8 @@ export default class App extends React.Component{
       this.createNewItem("Make Awesome App"),
       this.createNewItem("Have a lunc")
     ],
-    term: ""
+    term: "",
+    filter: "all"
   }
   createNewItem (label){
     return{
@@ -115,11 +116,34 @@ export default class App extends React.Component{
       return item.label.toLowerCase().indexOf(term.toLowerCase()) > -1;
     })
   }
+  onFilterChange = (filter) =>{
+    this.setState({filter});
+  }
+  filterItems(array, filter){
+    if(filter === "all"){
+      return array;
+    }
+    else if(filter === "done"){
+      return array.filter((item) => {
+        return item.done;
+      })
+    }
+    else if(filter === "active"){
+      return array.filter((item) => {
+        return !item.done;
+      })
+    }
+    else{
+      return array;
+    }
+  }
   render(){
 
-    const {todoData, term} = this.state;
+    const {todoData, term, filter} = this.state;
 
-    const visibleItems = this.search(todoData, term);
+    const filteredItems = this.filterItems(todoData, filter);
+
+    const visibleItems = this.search(filteredItems, term);
 
     return (
       <div className="todo-app">
@@ -127,7 +151,9 @@ export default class App extends React.Component{
         <div className="top-panel d-flex">
           <SearchPanel 
           onSearchChange={this.onSearchChange}/>
-          <ItemStatusFilter />
+          <ItemStatusFilter
+          filter={this.state.filter}
+          onFilterChange={this.onFilterChange}/>
         </div>
 
         <TodoList 
