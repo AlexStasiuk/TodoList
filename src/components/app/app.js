@@ -64,6 +64,36 @@ export default class App extends React.Component{
       });
       return res;
     };
+    this.getMaxId = () =>{
+      let maxId = 0;
+      const {todoData} = this.state;
+      todoData.forEach((elem) => {
+        if(elem.id > maxId){
+          maxId = elem.id;
+        }
+      });
+      console.log(maxId);
+      return maxId;
+    };
+    this.addNewItem = (text) =>{
+      this.setState((state) =>{
+        let maxId = 0;
+        
+        this.state.todoData.forEach((elem) => {
+          if(elem.id > maxId){
+            maxId = elem.id;
+          }
+        });
+        const newId = maxId + 1;
+        
+        const newItem = {id: newId, label: text, important: true, done: false};
+        const todoData = [...state.todoData, newItem];
+        return{
+          todoData
+        };
+      });
+    };
+
   }
 
   render(){
@@ -81,7 +111,9 @@ export default class App extends React.Component{
           onToggleImportant = {this.onToggleImportant}
           onToggleDone = {this.onToggleDone}
           />
-        <ItemAddForm />
+        <ItemAddForm 
+          addNewItem = {this.addNewItem}
+        />
       </div>
     );
   }
